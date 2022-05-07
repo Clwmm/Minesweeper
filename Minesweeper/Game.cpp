@@ -113,7 +113,7 @@ void Game::mainmenu()
 {
 	if (first)
 	{
-		window = new sf::RenderWindow(sf::VideoMode(500, 640), "Minesweeper");
+		window = new sf::RenderWindow(sf::VideoMode(500, 640), "Minesweeper", sf::Style::Close);
 		window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 		window->setFramerateLimit(15);
 		window->display();
