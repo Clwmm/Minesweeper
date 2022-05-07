@@ -4,7 +4,7 @@
 - 3 difficulty levels and 6 sizes (and one secret level)
 
 ```sh
-Minesweeper.exe
+Minesweeper.exe     //press "6" in mainmenu
 ```
 
 ## Screenshots
