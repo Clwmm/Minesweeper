@@ -10,6 +10,4 @@ Minesweeper.exe
 ## Screenshots
 | | |
 | ------ | ------ |
-| ![Photo](https://github.com/Clwmm/SkyIslandsGame/blob/main/Sky%20Islands%20Beta%203.0/res/graphics/1.gif) | ![Photo](https://github.com/Clwmm/SkyIslandsGame/blob/main/Sky%20Islands%20Beta%203.0/res/graphics/2.gif) |
-| ![Photo](https://github.com/Clwmm/SkyIslandsGame/blob/main/Sky%20Islands%20Beta%203.0/res/graphics/3.gif) | ![Photo](https://github.com/Clwmm/SkyIslandsGame/blob/main/Sky%20Islands%20Beta%203.0/res/graphics/4.gif) |
-| ![Photo](https://github.com/Clwmm/SkyIslandsGame/blob/main/Sky%20Islands%20Beta%203.0/res/graphics/5.png) | ![Photo](https://github.com/Clwmm/SkyIslandsGame/blob/main/Sky%20Islands%20Beta%203.0/res/graphics/6.png) |
+| ![Photo](https://github.com/Clwmm/Minesweeper/blob/master/Minesweeper/res/ss1.png) | ![Photo](https://github.com/Clwmm/Minesweeper/blob/master/Minesweeper/res/ss2.png) |
