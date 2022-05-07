@@ -113,7 +113,7 @@ void Game::mainmenu()
 {
 	if (first)
 	{
-		window = new sf::RenderWindow(sf::VideoMode(500, 640), "Minesweeper", sf::Style::Close);
+		window = new sf::RenderWindow(sf::VideoMode(500, 640), "Minesweeper");
 		window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 		window->setFramerateLimit(15);
 		window->display();
@@ -184,6 +184,9 @@ void Game::mainmenu()
 			case sf::Event::KeyPressed:
 				switch (evnt.key.code)
 				{
+				case sf::Keyboard::Num6:
+					size = 6;
+					break;
 				case sf::Keyboard::Escape:
 					if (mmstatus == MainMenuStatus::creditsOpen)
 					{
@@ -414,7 +417,7 @@ void Game::game()
 	switch (size)
 	{
 	case 0:
-		window->setSize(sf::Vector2u(220, 240));
+		window->setSize(sf::Vector2u(220, 254));
 		break;
 	case 1:
 		window->setSize(sf::Vector2u(352, 386));
@@ -429,7 +432,10 @@ void Game::game()
 		window->setSize(sf::Vector2u(660, 694));
 		break;
 	case 5:
-		window->setSize(sf::Vector2u(890, 914));
+		window->setSize(sf::Vector2u(880, 914));
+		break;
+	case 6:
+		window->setSize(sf::Vector2u(880, 914));
 		break;
 	}
 

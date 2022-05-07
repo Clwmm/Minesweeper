@@ -43,31 +43,108 @@ MapGenerator::MapGenerator(char size, char difficulty, std::vector<std::vector<B
 		nobombs.push_back(240);
 		nobombs.push_back(340);
 		break;
+	case 6:
+		mapsize = 40;
+
+		for (int i = 0; i < mapsize; i++)
+		{
+			std::vector<Box*> a;
+			for (int j = 0; j < mapsize; j++)
+			{
+				Box* e = new Box(i * 11 - (mapsize / 2 * 11), j * 11 - (mapsize / 2 * 11) + 8);
+				//a.insert(a.begin(), e);
+				a.push_back(e);
+			}
+			//boxes.insert(boxes.begin(), a);
+			boxes.push_back(a);
+		}
+
+		std::vector<std::string> R;
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+
+		R.push_back("........................................");
+		R.push_back(".XX.XX..XX......................XX...XX.");
+		R.push_back(".XX.XX..XX......................XXX.XXX.");
+		R.push_back(".XXXX...XX..XX...XX.............XXXXXXX.");
+		R.push_back(".XXXX...XX..XX.X.XX.............XX.X.XX.");
+		R.push_back(".XX.XX..XX..XX.X.XX.............XX...XX.");
+		R.push_back(".XX.XX..XX..XXXXXX...XXXXXXXXX..XX...XX.");
+		R.push_back(".XX.XX..XX...XX.XX...XXXXXXXXX..XX...XX.");
+		R.push_back("........................................");
+
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+		R.push_back("........................................");
+
+		for (int i = 0; i < R.size(); i++)
+			for (int j = 0; j < R[i].length(); j++)
+			{
+				if (R[i][j] == *"X")
+				{
+					boxes[j][i]->type = Type::bomb;
+					boxes[j][i]->behind.setTexture(*TextureManager::AcquireTexture("res/bomb.png"));
+				}
+			}
+
+		break;
 	}
 
-	for (int i = 0; i < mapsize; i++)
+	if (size != 6)
 	{
-		std::vector<Box*> a;
-		for (int j = 0; j < mapsize; j++)
+		for (int i = 0; i < mapsize; i++)
 		{
-			Box* e = new Box(i * 11 - (mapsize/2 * 11), j * 11 - (mapsize / 2 * 11) + 8);
-			a.push_back(e);
+			std::vector<Box*> a;
+			for (int j = 0; j < mapsize; j++)
+			{
+				Box* e = new Box(i * 11 - (mapsize / 2 * 11), j * 11 - (mapsize / 2 * 11) + 8);
+				a.push_back(e);
+			}
+			boxes.push_back(a);
 		}
-		boxes.push_back(a);
-	}
 
-	for (int i = 0; i < nobombs[difficulty]; i++)
-	{
-		int a = rand() % mapsize;
-		int b = rand() % mapsize;
-		if (boxes[a][b]->type == Type::normal)
+		for (int i = 0; i < nobombs[difficulty]; i++)
 		{
-			boxes[a][b]->type = Type::bomb;
-			boxes[a][b]->behind.setTexture(*TextureManager::AcquireTexture("res/bomb.png"));
+			int a = rand() % mapsize;
+			int b = rand() % mapsize;
+			if (boxes[a][b]->type == Type::normal)
+			{
+				boxes[a][b]->type = Type::bomb;
+				boxes[a][b]->behind.setTexture(*TextureManager::AcquireTexture("res/bomb.png"));
+			}
+			else
+				i--;
 		}
-		else
-			i--;
 	}
+	
 
 
 	for (int i = 1; i < mapsize - 1; i++)
@@ -261,6 +338,8 @@ int MapGenerator::setMapSize(char size)
 	case 4:
 		return 30;
 	case 5:
+		return 40;
+	case 6:
 		return 40;
 	}
 }
