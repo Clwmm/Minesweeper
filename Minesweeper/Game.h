@@ -3,9 +3,11 @@
 #include "MapGenerator.h"
 #include "TextureManager.h"
 #include "Box.h"
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 
 enum class GameStatus { logo, mainmenu, game};
-enum class MainMenuStatus { play, difficulty, size, credits, creditsOpen, exit };
+enum class MainMenuStatus { play, difficulty, size, highscore, credits, creditsOpen, exit };
 
 class Game
 {
@@ -22,6 +24,10 @@ private:
 	char size = 0;
 	char difficulty = 0;
 	int mapsize = 0;
+	int windowsetting = 0;
+	sf::Vector2f windowsize;
+
+	int highscore[6][3];
 
 	bool first = true;
 
@@ -41,5 +47,14 @@ private:
 private:
 	void clearing(int i, int j);
 	void drawTextWithShadow(sf::RenderWindow* window, sf::Text& text, std::string string, int offset);
+
+private:
+	friend class boost::serialization::access;
+
+	template<class Archive>
+	void serialize(Archive& a, const unsigned version)
+	{
+		a& windowsetting;
+	}
 };
 

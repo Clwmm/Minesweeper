@@ -113,19 +113,21 @@ void Game::mainmenu()
 {
 	if (first)
 	{
-		window = new sf::RenderWindow(sf::VideoMode(500, 640), "Minesweeper", sf::Style::Close);
+		window = new sf::RenderWindow(sf::VideoMode(500, 740), "Minesweeper", sf::Style::Close);
 		window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 		window->setFramerateLimit(15);
 		window->display();
 		first = false;
 	}
 	else
-	{
-		window->setSize(sf::Vector2u(500, 640));
-	}
+		window->setSize(sf::Vector2u(500, 740));
 	
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(window->getSize()));
 	window->setView(view);
+
+	int xoffset = -80;
+	int yoffset = -259;
+	int ydistance = 105;
 
 	sf::Text text[3];
 	for (int i = 0; i < 3; i++)
@@ -133,12 +135,13 @@ void Game::mainmenu()
 		text[i].setCharacterSize(102);
 		text[i].setFont(*font);
 		text[i].setFillColor(sf::Color(30, 133, 159));
-		text[i].setPosition(view.getCenter().x - 70, view.getCenter().y + (i * 3 * 105) - 259);
+		text[i].setPosition(view.getCenter().x + xoffset, view.getCenter().y + (i * 3 * 105) - 259);
 	}
 	text[0].setString("Play");
 	text[1].setString("Credits");
+	//text[2].setString("Highscore");
 	text[2].setString("Exit");
-	text[2].setPosition(view.getCenter().x - 70, view.getCenter().y + 4*105 - 259);
+	text[2].setPosition(view.getCenter().x + xoffset, view.getCenter().y + 4*105 - 259);
 
 	sf::Text difficultyText[3];
 	for (int i = 0; i < 3; i++)
@@ -336,17 +339,17 @@ void Game::mainmenu()
 				if (i == difficulty)
 				{
 					difficultyText[i].setCharacterSize(102);
-					difficultyText[i].setPosition(view.getCenter().x - 70, view.getCenter().y - 154);
+					difficultyText[i].setPosition(view.getCenter().x + xoffset, view.getCenter().y - 154);
 				}
 				else if (i < difficulty)
 				{
 					difficultyText[i].setCharacterSize(51);
-					difficultyText[i].setPosition(view.getCenter().x - 140, view.getCenter().y - 65);
+					difficultyText[i].setPosition(view.getCenter().x + (2*xoffset), view.getCenter().y - 65);
 				}
 				else if (i > difficulty)
 				{
 					difficultyText[i].setCharacterSize(51);
-					difficultyText[i].setPosition(view.getCenter().x + 70, view.getCenter().y - 65);
+					difficultyText[i].setPosition(view.getCenter().x - xoffset, view.getCenter().y - 65);
 				}
 			}
 
@@ -355,17 +358,17 @@ void Game::mainmenu()
 				if (i == size)
 				{
 					sizeText[i].setCharacterSize(102);
-					sizeText[i].setPosition(view.getCenter().x - 70, view.getCenter().y - 49);
+					sizeText[i].setPosition(view.getCenter().x + xoffset, view.getCenter().y - 49);
 				}
 				else if (i < size)
 				{
 					sizeText[i].setCharacterSize(51);
-					sizeText[i].setPosition(view.getCenter().x - 140, view.getCenter().y + 50);
+					sizeText[i].setPosition(view.getCenter().x + (2*xoffset), view.getCenter().y + 50);
 				}
 				else if (i > size)
 				{
 					sizeText[i].setCharacterSize(51);
-					sizeText[i].setPosition(view.getCenter().x + 70, view.getCenter().y + 50);
+					sizeText[i].setPosition(view.getCenter().x - xoffset, view.getCenter().y + 50);
 				}
 			}
 
@@ -418,24 +421,31 @@ void Game::game()
 	{
 	case 0:
 		window->setSize(sf::Vector2u(220, 254));
+		windowsize = sf::Vector2f(220, 254);
 		break;
 	case 1:
 		window->setSize(sf::Vector2u(352, 386));
+		windowsize = sf::Vector2f(352, 386);
 		break;
 	case 2:
 		window->setSize(sf::Vector2u(440, 474));
+		windowsize = sf::Vector2f(440, 474);
 		break;
 	case 3:
 		window->setSize(sf::Vector2u(572, 606));
+		windowsize = sf::Vector2f(572, 606);
 		break;
 	case 4:
 		window->setSize(sf::Vector2u(660, 694));
+		windowsize = sf::Vector2f(660, 694);
 		break;
 	case 5:
 		window->setSize(sf::Vector2u(880, 914));
+		windowsize = sf::Vector2f(880, 914);
 		break;
 	case 6:
 		window->setSize(sf::Vector2u(880, 914));
+		windowsize = sf::Vector2f(880, 914);
 		break;
 	}
 
@@ -447,6 +457,8 @@ void Game::game()
 
 	sf::View view(sf::Vector2f(0, 0), sf::Vector2f(window->getSize().x / 2, window->getSize().y / 2));
 	window->setView(view);
+
+	window->setSize(sf::Vector2u(windowsize.x + (windowsetting * 25), windowsize.y + (windowsetting * 25)));
 
 	sf::Text text;
 	text.setCharacterSize(16);
@@ -512,6 +524,16 @@ void Game::game()
 			case sf::Event::KeyPressed:
 				switch (evnt.key.code)
 				{
+				case sf::Keyboard::Up:
+					if (windowsetting < 10)
+						windowsetting++;
+					window->setSize(sf::Vector2u(windowsize.x + (windowsetting*25), windowsize.y + (windowsetting * 25)));
+					break;
+				case sf::Keyboard::Down:
+					if (windowsetting > 0)
+						windowsetting--;
+					window->setSize(sf::Vector2u(windowsize.x + (windowsetting * 25), windowsize.y + (windowsetting * 25)));
+					break;
 				case sf::Keyboard::Enter:
 					status = GameStatus::mainmenu;
 					for (auto i : boxes)
