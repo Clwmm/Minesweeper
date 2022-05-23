@@ -51,7 +51,7 @@ MapGenerator::MapGenerator(char size, char difficulty, std::vector<std::vector<B
 			std::vector<Box*> a;
 			for (int j = 0; j < mapsize; j++)
 			{
-				Box* e = new Box(i * 11 - (mapsize / 2 * 11), j * 11 - (mapsize / 2 * 11) + 8);
+				Box* e = new Box(i * 11 - (mapsize / 2 * 11), j * 11 - (mapsize / 2 * 11) + 8, i, j);
 				//a.insert(a.begin(), e);
 				a.push_back(e);
 			}
@@ -125,7 +125,7 @@ MapGenerator::MapGenerator(char size, char difficulty, std::vector<std::vector<B
 			std::vector<Box*> a;
 			for (int j = 0; j < mapsize; j++)
 			{
-				Box* e = new Box(i * 11 - (mapsize / 2 * 11), j * 11 - (mapsize / 2 * 11) + 8);
+				Box* e = new Box(i * 11 - (mapsize / 2 * 11), j * 11 - (mapsize / 2 * 11) + 8, i, j);
 				a.push_back(e);
 			}
 			boxes.push_back(a);

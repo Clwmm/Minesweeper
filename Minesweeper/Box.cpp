@@ -1,9 +1,11 @@
 #include "Box.h"
 
-Box::Box(float _x, float _y)
+Box::Box(float _x, float _y, int _i, int _j)
 {
 	x = _x;
 	y = _y;
+	i = _i;
+	j = _j;
 	type = Type::normal;
 
 	box.setTexture(*TextureManager::AcquireTexture("res/box.png"));

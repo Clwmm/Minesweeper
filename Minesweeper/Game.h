@@ -27,6 +27,9 @@ private:
 	int windowsetting = 0;
 	sf::Vector2f windowsize;
 
+	bool lose = false;
+	bool win = false;
+
 	int highscore[6][3];
 
 	bool first = true;
@@ -45,6 +48,7 @@ private:
 	void mainmenu();
 	void game();
 private:
+	void midclear(int i, int j);
 	void clearing(int i, int j);
 	void drawTextWithShadow(sf::RenderWindow* window, sf::Text& text, std::string string, int offset);
 
@@ -57,4 +61,3 @@ private:
 		a& windowsetting;
 	}
 };
-

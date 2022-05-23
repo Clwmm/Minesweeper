@@ -470,12 +470,13 @@ void Game::game()
 	int countCursor = 0;
 	bool leftMouse = false;
 	bool rightMouse = false;
+	bool middleMouse = false;
 
 	int bombs = 0;
 	int boxs = 0;
 	float time = 0;
-	bool lose = false;
-	bool win = false;
+	lose = false;
+	win = false;
 
 	mapsize = MapGenerator::setMapSize(size);
 
@@ -504,6 +505,7 @@ void Game::game()
 			time += clock.restart().asSeconds();
 		leftMouse = false;
 		rightMouse = false;
+		middleMouse = false;
 		bombs = 0;
 		boxs = 0;
 		while (window->pollEvent(evnt))
@@ -516,11 +518,18 @@ void Game::game()
 				close = true;
 				return;
 			case sf::Event::MouseButtonPressed:
-				if (evnt.mouseButton.button == sf::Mouse::Button::Left)
+				switch (evnt.mouseButton.button)
+				{
+				case sf::Mouse::Button::Left:
 					leftMouse = true;
-				if (evnt.mouseButton.button == sf::Mouse::Button::Right)
+					break;
+				case sf::Mouse::Button::Right:
 					rightMouse = true;
-				break;
+					break;
+				case sf::Mouse::Button::Middle:
+					middleMouse = true;
+					break;
+				}
 			case sf::Event::KeyPressed:
 				switch (evnt.key.code)
 				{
@@ -627,6 +636,10 @@ void Game::game()
 					case Stat::flagged:
 						if (rightMouse)
 							boxes[i][j]->stat = Stat::normal;
+						break;
+					case Stat::pressed:
+						if (middleMouse)
+							midclear(i, j);
 						break;
 					}
 				}
@@ -939,6 +952,60 @@ void Game::clearing(int  i, int j)
 				clearing(mapsize - 1, mapsize - 2);
 		}
 	}
+}
+
+void Game::midclear(int i, int j)
+{
+	int a = boxes[i][j]->nobombs;
+	int b = 0;
+	std::vector<Box*> temp;
+
+	if (i - 1 >= 0 && j - 1 >= 0)
+		temp.push_back(boxes[i - 1][j - 1]);
+	if (i + 1 < mapsize && j + 1 < mapsize)
+		temp.push_back(boxes[i + 1][j + 1]);
+	if (i + 1 < mapsize && j - 1 >= 0)
+		temp.push_back(boxes[i + 1][j - 1]);
+	if (i - 1 >= 0 && j + 1 < mapsize)
+		temp.push_back(boxes[i - 1][j + 1]);
+	if (j + 1 < mapsize)
+		temp.push_back(boxes[i][j + 1]);
+	if (j - 1 >= 0)
+		temp.push_back(boxes[i][j - 1]);
+	if (i + 1 < mapsize)
+		temp.push_back(boxes[i + 1][j]);
+	if (i - 1 >= 0)
+		temp.push_back(boxes[i - 1][j]);
+
+	for (auto i : temp)
+		if (i->stat == Stat::flagged)
+			b++;
+
+	if (a == b)
+	{
+		for (auto i : temp)
+		{
+			if (i->type == Type::bomb && i->stat != Stat::flagged)
+			{
+				lose = true;
+				return;
+			}
+			if (i->stat == Stat::flagged && i->type != Type::bomb)
+			{
+				lose = true;
+				return;
+			}
+		}
+		for (auto i : temp)
+		{
+			if (i->type == Type::normal && i->nobombs == 0)
+				clearing(i->i, i->j);
+			else if (i->type == Type::normal)
+				i->stat = Stat::pressed;
+		}
+	}
+	else
+		lose = true;
 }
 
 void Game::drawTextWithShadow(sf::RenderWindow* window, sf::Text& text, std::string string, int offset)
