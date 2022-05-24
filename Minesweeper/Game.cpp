@@ -42,7 +42,7 @@ void Game::logoLoading()
 	logo.setPosition(window->getSize().x / 2, window->getSize().y / 2);
 
 	window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-	window->setFramerateLimit(240);
+	window->setFramerateLimit(30);
 	window->display();
 
 	sf::Event evnt;
@@ -450,7 +450,7 @@ void Game::game()
 	}
 
 	window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-	window->setFramerateLimit(240);
+	window->setFramerateLimit(30);
 	window->display();
 	
 	MapGenerator map(size, difficulty, boxes);
@@ -471,6 +471,8 @@ void Game::game()
 	bool leftMouse = false;
 	bool rightMouse = false;
 	bool middleMouse = false;
+
+	bool firsttouch = true;
 
 	int bombs = 0;
 	int boxs = 0;
@@ -620,14 +622,39 @@ void Game::game()
 						countCursor++;
 						if (leftMouse)
 						{
-							if (boxes[i][j]->type == Type::bomb)
-								lose = true;
+							if (firsttouch && size != 6)
+							{
+								// FIRST TOUCH AND REGENERATING MAP
+
+								if (boxes[i][j]->type == Type::bomb)
+								{
+									MapGenerator::mapregenerate(size, difficulty, boxes, i, j);
+									clearing(i, j);
+								}
+								else
+								{
+									if (boxes[i][j]->nobombs == 0)
+										clearing(i, j);
+									else
+									{
+										MapGenerator::mapregenerate(size, difficulty, boxes, i, j);
+										clearing(i, j);
+									}
+								}
+
+								firsttouch = false;
+							}
 							else
 							{
-								if (boxes[i][j]->nobombs == 0)
-									clearing(i, j);
+								if (boxes[i][j]->type == Type::bomb)
+									lose = true;
 								else
-									boxes[i][j]->stat = Stat::pressed;
+								{
+									if (boxes[i][j]->nobombs == 0)
+										clearing(i, j);
+									else
+										boxes[i][j]->stat = Stat::pressed;
+								}
 							}
 						}
 						if (rightMouse)

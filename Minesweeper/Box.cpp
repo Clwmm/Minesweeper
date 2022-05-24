@@ -19,7 +19,8 @@ void Box::draw(sf::RenderWindow* window)
 	flag.setPosition(x, y);
 	behind.setPosition(x, y);
 
-	window->draw(behind);
+	if (nobombs > 0 || type == Type::bomb)
+		window->draw(behind);
 	switch (stat)
 	{
 	case Stat::normal:
