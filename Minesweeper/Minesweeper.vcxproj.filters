@@ -57,5 +57,61 @@
     <Image Include="..\..\..\..\Desktop\Minesweeper\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\7.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\8.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bomb.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\box.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\flag.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\logo.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\redbomb.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ss1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\ss2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\wrongbomb.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\notalot35.ttf">
+      <Filter>Resource Files</Filter>
+    </Font>
   </ItemGroup>
 </Project>

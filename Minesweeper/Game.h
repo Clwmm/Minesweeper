@@ -58,6 +58,6 @@ private:
 	template<class Archive>
 	void serialize(Archive& a, const unsigned version)
 	{
-		a& windowsetting;
+		a & windowsetting & highscore;
 	}
 };

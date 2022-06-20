@@ -163,6 +163,26 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Desktop\Minesweeper\icon.ico" />
+    <Image Include="res\1.png" />
+    <Image Include="res\2.png" />
+    <Image Include="res\3.png" />
+    <Image Include="res\4.png" />
+    <Image Include="res\5.png" />
+    <Image Include="res\6.png" />
+    <Image Include="res\7.png" />
+    <Image Include="res\8.png" />
+    <Image Include="res\bomb.png" />
+    <Image Include="res\box.png" />
+    <Image Include="res\flag.png" />
+    <Image Include="res\icon.png" />
+    <Image Include="res\logo.png" />
+    <Image Include="res\redbomb.png" />
+    <Image Include="res\ss1.png" />
+    <Image Include="res\ss2.png" />
+    <Image Include="res\wrongbomb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="res\notalot35.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

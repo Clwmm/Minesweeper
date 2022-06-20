@@ -144,183 +144,42 @@ MapGenerator::MapGenerator(char size, char difficulty, std::vector<std::vector<B
 				i--;
 		}
 	}
-	
 
 
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		for (int j = 1; j < mapsize - 1; j++)
+	for (auto i : boxes)
+		for (auto j : i)
 		{
+			std::vector<Box*> temp;
+
+			if (j->i - 1 >= 0 && j->j - 1 >= 0)
+				temp.push_back(boxes[j->i - 1][j->j - 1]);
+			if (j->i + 1 < mapsize && j->j + 1 < mapsize)
+				temp.push_back(boxes[j->i + 1][j->j + 1]);
+			if (j->i + 1 < mapsize && j->j - 1 >= 0)
+				temp.push_back(boxes[j->i + 1][j->j - 1]);
+			if (j->i - 1 >= 0 && j->j + 1 < mapsize)
+				temp.push_back(boxes[j->i - 1][j->j + 1]);
+			if (j->j + 1 < mapsize)
+				temp.push_back(boxes[j->i][j->j + 1]);
+			if (j->j - 1 >= 0)
+				temp.push_back(boxes[j->i][j->j - 1]);
+			if (j->i + 1 < mapsize)
+				temp.push_back(boxes[j->i + 1][j->j]);
+			if (j->i - 1 >= 0)
+				temp.push_back(boxes[j->i - 1][j->j]);
+
 			int a = 0;
-			if (boxes[i][j]->type == Type::normal)
+
+			for (auto k : temp)
 			{
-				if (boxes[i - 1][j - 1]->type == Type::bomb)
+				if (k->type == Type::bomb)
 					a++;
-				if (boxes[i][j - 1]->type == Type::bomb)
-					a++;
-				if (boxes[i + 1][j - 1]->type == Type::bomb)
-					a++;
-				if (boxes[i - 1][j]->type == Type::bomb)
-					a++;
-				if (boxes[i + 1][j]->type == Type::bomb)
-					a++;
-				if (boxes[i - 1][j + 1]->type == Type::bomb)
-					a++;
-				if (boxes[i][j + 1]->type == Type::bomb)
-					a++;
-				if (boxes[i + 1][j + 1]->type == Type::bomb)
-					a++;
-
-				if (a != 0)
-					boxes[i][j]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-				boxes[i][j]->nobombs = a;
 			}
-		}
-	}
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[0][i]->type == Type::normal)
-		{
-			if (boxes[0][i-1]->type == Type::bomb)
-				a++;
-			if (boxes[1][i-1]->type == Type::bomb)
-				a++;
-			if (boxes[1][i]->type == Type::bomb)
-				a++;
-			if (boxes[1][i+1]->type == Type::bomb)
-				a++;
-			if (boxes[0][i+1]->type == Type::bomb)
-				a++;
-
 			if (a != 0)
-				boxes[0][i]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[0][i]->nobombs = a;
+				j->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
+			j->nobombs = a;
 		}
-	}
 
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[mapsize - 1][i]->type == Type::normal)
-		{
-			if (boxes[mapsize - 1][i - 1]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 2][i - 1]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 2][i]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 2][i + 1]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 1][i + 1]->type == Type::bomb)
-				a++;
-
-			if (a != 0)
-				boxes[mapsize - 1][i]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[mapsize - 1][i]->nobombs = a;
-		}
-	}
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[i][0]->type == Type::normal)
-		{
-			if (boxes[i - 1][0]->type == Type::bomb)
-				a++;
-			if (boxes[i - 1][1]->type == Type::bomb)
-				a++;
-			if (boxes[i][1]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][1]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][0]->type == Type::bomb)
-				a++;
-
-			if (a != 0)
-				boxes[i][0]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[i][0]->nobombs = a;
-		}
-	}
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[i][mapsize - 1]->type == Type::normal)
-		{
-			if (boxes[i - 1][mapsize - 1]->type == Type::bomb)
-				a++;
-			if (boxes[i - 1][mapsize - 2]->type == Type::bomb)
-				a++;
-			if (boxes[i][mapsize - 2]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][mapsize - 2]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][mapsize - 1]->type == Type::bomb)
-				a++;
-
-			if (a != 0)
-				boxes[i][mapsize - 1]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[i][mapsize - 1]->nobombs = a;
-		}
-	}
-
-	if (boxes[0][0]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[1][0]->type == Type::bomb)
-			a++;
-		if (boxes[1][1]->type == Type::bomb)
-			a++;
-		if (boxes[0][1]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[0][0]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[0][0]->nobombs = a;
-	}
-
-	if (boxes[mapsize - 1][mapsize - 1]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[mapsize - 2][mapsize - 1]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 2][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 1][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[mapsize - 1][mapsize - 1]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[mapsize - 1][mapsize - 1]->nobombs = a;
-	}
-
-	if (boxes[mapsize - 1][0]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[mapsize - 2][0]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 2][1]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 1][1]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[mapsize - 1][0]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[mapsize - 1][0]->nobombs = a;
-	}
-
-	if (boxes[0][mapsize - 1]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[1][mapsize - 1]->type == Type::bomb)
-			a++;
-		if (boxes[1][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (boxes[0][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[0][mapsize - 1]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[0][mapsize - 1]->nobombs = a;
-	}
 }
 
 int MapGenerator::setMapSize(char size)
@@ -416,181 +275,42 @@ void MapGenerator::mapregenerate(char size, char difficulty, std::vector<std::ve
 			i--;
 	}
 
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		for (int j = 1; j < mapsize - 1; j++)
+	for (auto i : boxes)
+		for (auto j : i)
 		{
-			int a = 0;
-			if (boxes[i][j]->type == Type::normal)
+			if (j->type != Type::bomb)
 			{
-				if (boxes[i - 1][j - 1]->type == Type::bomb)
-					a++;
-				if (boxes[i][j - 1]->type == Type::bomb)
-					a++;
-				if (boxes[i + 1][j - 1]->type == Type::bomb)
-					a++;
-				if (boxes[i - 1][j]->type == Type::bomb)
-					a++;
-				if (boxes[i + 1][j]->type == Type::bomb)
-					a++;
-				if (boxes[i - 1][j + 1]->type == Type::bomb)
-					a++;
-				if (boxes[i][j + 1]->type == Type::bomb)
-					a++;
-				if (boxes[i + 1][j + 1]->type == Type::bomb)
-					a++;
+				std::vector<Box*> temp;
 
+				if (j->i - 1 >= 0 && j->j - 1 >= 0)
+					temp.push_back(boxes[j->i - 1][j->j - 1]);
+				if (j->i + 1 < mapsize && j->j + 1 < mapsize)
+					temp.push_back(boxes[j->i + 1][j->j + 1]);
+				if (j->i + 1 < mapsize && j->j - 1 >= 0)
+					temp.push_back(boxes[j->i + 1][j->j - 1]);
+				if (j->i - 1 >= 0 && j->j + 1 < mapsize)
+					temp.push_back(boxes[j->i - 1][j->j + 1]);
+				if (j->j + 1 < mapsize)
+					temp.push_back(boxes[j->i][j->j + 1]);
+				if (j->j - 1 >= 0)
+					temp.push_back(boxes[j->i][j->j - 1]);
+				if (j->i + 1 < mapsize)
+					temp.push_back(boxes[j->i + 1][j->j]);
+				if (j->i - 1 >= 0)
+					temp.push_back(boxes[j->i - 1][j->j]);
+
+				int a = 0;
+
+				for (auto k : temp)
+				{
+					if (k->type == Type::bomb)
+						a++;
+				}
 				if (a != 0)
-					boxes[i][j]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-				boxes[i][j]->nobombs = a;
+					j->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
+				j->nobombs = a;
 			}
 		}
-	}
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[0][i]->type == Type::normal)
-		{
-			if (boxes[0][i - 1]->type == Type::bomb)
-				a++;
-			if (boxes[1][i - 1]->type == Type::bomb)
-				a++;
-			if (boxes[1][i]->type == Type::bomb)
-				a++;
-			if (boxes[1][i + 1]->type == Type::bomb)
-				a++;
-			if (boxes[0][i + 1]->type == Type::bomb)
-				a++;
-
-			if (a != 0)
-				boxes[0][i]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[0][i]->nobombs = a;
-		}
-	}
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[mapsize - 1][i]->type == Type::normal)
-		{
-			if (boxes[mapsize - 1][i - 1]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 2][i - 1]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 2][i]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 2][i + 1]->type == Type::bomb)
-				a++;
-			if (boxes[mapsize - 1][i + 1]->type == Type::bomb)
-				a++;
-
-			if (a != 0)
-				boxes[mapsize - 1][i]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[mapsize - 1][i]->nobombs = a;
-		}
-	}
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[i][0]->type == Type::normal)
-		{
-			if (boxes[i - 1][0]->type == Type::bomb)
-				a++;
-			if (boxes[i - 1][1]->type == Type::bomb)
-				a++;
-			if (boxes[i][1]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][1]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][0]->type == Type::bomb)
-				a++;
-
-			if (a != 0)
-				boxes[i][0]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[i][0]->nobombs = a;
-		}
-	}
-
-	for (int i = 1; i < mapsize - 1; i++)
-	{
-		int a = 0;
-		if (boxes[i][mapsize - 1]->type == Type::normal)
-		{
-			if (boxes[i - 1][mapsize - 1]->type == Type::bomb)
-				a++;
-			if (boxes[i - 1][mapsize - 2]->type == Type::bomb)
-				a++;
-			if (boxes[i][mapsize - 2]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][mapsize - 2]->type == Type::bomb)
-				a++;
-			if (boxes[i + 1][mapsize - 1]->type == Type::bomb)
-				a++;
-
-			if (a != 0)
-				boxes[i][mapsize - 1]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			boxes[i][mapsize - 1]->nobombs = a;
-		}
-	}
-
-	if (boxes[0][0]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[1][0]->type == Type::bomb)
-			a++;
-		if (boxes[1][1]->type == Type::bomb)
-			a++;
-		if (boxes[0][1]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[0][0]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[0][0]->nobombs = a;
-	}
-
-	if (boxes[mapsize - 1][mapsize - 1]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[mapsize - 2][mapsize - 1]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 2][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 1][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[mapsize - 1][mapsize - 1]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[mapsize - 1][mapsize - 1]->nobombs = a;
-	}
-
-	if (boxes[mapsize - 1][0]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[mapsize - 2][0]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 2][1]->type == Type::bomb)
-			a++;
-		if (boxes[mapsize - 1][1]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[mapsize - 1][0]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[mapsize - 1][0]->nobombs = a;
-	}
-
-	if (boxes[0][mapsize - 1]->type == Type::normal)
-	{
-		int a = 0;
-		if (boxes[1][mapsize - 1]->type == Type::bomb)
-			a++;
-		if (boxes[1][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (boxes[0][mapsize - 2]->type == Type::bomb)
-			a++;
-		if (a != 0)
-			boxes[0][mapsize - 1]->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-		boxes[0][mapsize - 1]->nobombs = a;
-	}
 
 }
 

@@ -139,7 +139,6 @@ void Game::mainmenu()
 	}
 	text[0].setString("Play");
 	text[1].setString("Credits");
-	//text[2].setString("Highscore");
 	text[2].setString("Exit");
 	text[2].setPosition(view.getCenter().x + xoffset, view.getCenter().y + 4*105 - 259);
 
@@ -465,12 +464,18 @@ void Game::game()
 	text.setFont(*font);
 	text.setFillColor(sf::Color(30, 133, 159));
 	text.setPosition(view.getCenter().x - view.getSize().x / 2 + 4, view.getCenter().y - view.getSize().y / 2 - 4);
-	window->draw(text);
+
+	sf::Text wintext;
+	wintext.setCharacterSize(18);
+	wintext.setFont(*font);
+	wintext.setFillColor(sf::Color(255, 255, 204));
+	wintext.setPosition(view.getCenter().x - (view.getSize().x / 2) + 8, view.getCenter().y - 20);
 
 	int countCursor = 0;
 	bool leftMouse = false;
 	bool rightMouse = false;
 	bool middleMouse = false;
+	bool hsbool = false;
 
 	bool firsttouch = true;
 
@@ -493,15 +498,26 @@ void Game::game()
 			for (auto i : boxes)
 				for (auto j : i)
 				{
+					if (j->stat == Stat::flagged && j->type != Type::bomb)
+						j->behind.setTexture(*TextureManager::AcquireTexture("res/wrongbomb.png"));
+				}
+			for (auto i : boxes)
+				for (auto j : i)
+				{
 					if (j->stat != Stat::pressed)
 						j->stat = Stat::pressed;
 				}
 		}
 		if (win)
+		{
 			for (auto i : boxes)
 				for (auto j : i)
 					if (j->type == Type::bomb)
 						j->stat = Stat::flagged;
+			if (time < highscore[size][difficulty] || highscore[size][difficulty] == 0)
+				highscore[size][difficulty] = time;
+		}
+			
 
 		if (!win && !lose)
 			time += clock.restart().asSeconds();
@@ -544,6 +560,9 @@ void Game::game()
 					if (windowsetting > 0)
 						windowsetting--;
 					window->setSize(sf::Vector2u(windowsize.x + (windowsetting * 25), windowsize.y + (windowsetting * 25)));
+					break;
+				case sf::Keyboard::H:
+					hsbool = !hsbool;
 					break;
 				case sf::Keyboard::Enter:
 					status = GameStatus::mainmenu;
@@ -647,7 +666,10 @@ void Game::game()
 							else
 							{
 								if (boxes[i][j]->type == Type::bomb)
+								{
+									boxes[i][j]->behind.setTexture(*TextureManager::AcquireTexture("res/redbomb.png"));
 									lose = true;
+								}
 								else
 								{
 									if (boxes[i][j]->nobombs == 0)
@@ -689,7 +711,17 @@ void Game::game()
 		for (auto i : boxes)
 			for (auto j : i)
 				j->draw(window);
-		drawTextWithShadow(window, text, "Bombs: " + std::to_string(bombs) + "  Time: " + std::to_string(static_cast<int>(time)), 1);
+		if(!hsbool)
+			drawTextWithShadow(window, text, "Bombs: " + std::to_string(bombs) + "  Time: " + std::to_string(static_cast<int>(time)), 1);
+		else
+		{
+			if (highscore[size][difficulty] == 0)
+				drawTextWithShadow(window, text, "Bombs: " + std::to_string(bombs) + "  HS: ---", 1);
+			else
+				drawTextWithShadow(window, text, "Bombs: " + std::to_string(bombs) + "  HS: " + std::to_string(static_cast<int>(highscore[size][difficulty])), 1);
+		}
+		if (win)
+			drawTextWithShadow(window, wintext, "Time: " + std::to_string(static_cast<int>(time)) + "\nHighScore : " + std::to_string(static_cast<int>(highscore[size][difficulty])), 1);
 		window->display();
 	}
 }
@@ -697,292 +729,38 @@ void Game::game()
 void Game::clearing(int  i, int j)
 {
 	boxes[i][j]->stat = Stat::pressed;
-	if (i >= 1 && i <= mapsize - 2 && j >= 1 && j <= mapsize - 2)
-	{
-		if (boxes[i - 1][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j - 1]->stat = Stat::pressed;
-			if (boxes[i - 1][j - 1]->nobombs == 0)
-				clearing(i - 1, j - 1);
-		}
-		
-		if (boxes[i][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i][j - 1]->stat = Stat::pressed;
-			if (boxes[i][j - 1]->nobombs == 0)
-				clearing(i, j - 1);
-		}
-		
-		if (boxes[i + 1][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j - 1]->stat = Stat::pressed;
-			if (boxes[i + 1][j - 1]->nobombs == 0)
-				clearing(i + 1, j - 1);
-		}
-		
-		if (boxes[i - 1][j]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j]->stat = Stat::pressed;
-			if (boxes[i - 1][j]->nobombs == 0)
-				clearing(i - 1, j);
-		}
 
-		if (boxes[i + 1][j]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j]->stat = Stat::pressed;
-			if (boxes[i + 1][j]->nobombs == 0)
-				clearing(i + 1, j);
-		}
-		
-		if (boxes[i - 1][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j + 1]->stat = Stat::pressed;
-			if (boxes[i - 1][j + 1]->nobombs == 0)
-				clearing(i - 1, j + 1);
-		}
-		
-		if (boxes[i][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i][j + 1]->stat = Stat::pressed;
-			if (boxes[i][j + 1]->nobombs == 0)
-				clearing(i, j + 1);
-		}
-		
-		if (boxes[i + 1][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j + 1]->stat = Stat::pressed;
-			if (boxes[i + 1][j + 1]->nobombs == 0)
-				clearing(i + 1, j + 1);
-		}
-	}
-	else if (i >= 1 && i <= mapsize - 2 && j == 0)
-	{
-		if (boxes[i - 1][j]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j]->stat = Stat::pressed;
-			if (boxes[i - 1][j]->nobombs == 0)
-				clearing(i - 1, j);
-		}
+	std::vector<Box*> temp;
 
-		if (boxes[i + 1][j]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j]->stat = Stat::pressed;
-			if (boxes[i + 1][j]->nobombs == 0)
-				clearing(i + 1, j);
-		}
+	if (i - 1 >= 0 && j - 1 >= 0)
+		temp.push_back(boxes[i - 1][j - 1]);
+	if (i + 1 < mapsize && j + 1 < mapsize)
+		temp.push_back(boxes[i + 1][j + 1]);
+	if (i + 1 < mapsize && j - 1 >= 0)
+		temp.push_back(boxes[i + 1][j - 1]);
+	if (i - 1 >= 0 && j + 1 < mapsize)
+		temp.push_back(boxes[i - 1][j + 1]);
+	if (j + 1 < mapsize)
+		temp.push_back(boxes[i][j + 1]);
+	if (j - 1 >= 0)
+		temp.push_back(boxes[i][j - 1]);
+	if (i + 1 < mapsize)
+		temp.push_back(boxes[i + 1][j]);
+	if (i - 1 >= 0)
+		temp.push_back(boxes[i - 1][j]);
 
-		if (boxes[i - 1][j + 1]->stat != Stat::pressed)
+	for (auto k : temp)
+		if (k->stat != Stat::pressed)
 		{
-			boxes[i - 1][j + 1]->stat = Stat::pressed;
-			if (boxes[i - 1][j + 1]->nobombs == 0)
-				clearing(i - 1, j + 1);
+			k->stat = Stat::pressed;
+			if (k->nobombs == 0)
+				clearing(k->i, k->j);
 		}
-
-		if (boxes[i][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i][j + 1]->stat = Stat::pressed;
-			if (boxes[i][j + 1]->nobombs == 0)
-				clearing(i, j + 1);
-		}
-
-		if (boxes[i + 1][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j + 1]->stat = Stat::pressed;
-			if (boxes[i + 1][j + 1]->nobombs == 0)
-				clearing(i + 1, j + 1);
-		}
-	}
-	else if (i >= 1 && i <= mapsize - 2 && j == mapsize - 1)
-	{
-		if (boxes[i - 1][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j - 1]->stat = Stat::pressed;
-			if (boxes[i - 1][j - 1]->nobombs == 0)
-				clearing(i - 1, j - 1);
-		}
-
-		if (boxes[i][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i][j - 1]->stat = Stat::pressed;
-			if (boxes[i][j - 1]->nobombs == 0)
-				clearing(i, j - 1);
-		}
-
-		if (boxes[i + 1][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j - 1]->stat = Stat::pressed;
-			if (boxes[i + 1][j - 1]->nobombs == 0)
-				clearing(i + 1, j - 1);
-		}
-
-		if (boxes[i - 1][j]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j]->stat = Stat::pressed;
-			if (boxes[i - 1][j]->nobombs == 0)
-				clearing(i - 1, j);
-		}
-
-		if (boxes[i + 1][j]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j]->stat = Stat::pressed;
-			if (boxes[i + 1][j]->nobombs == 0)
-				clearing(i + 1, j);
-		}
-	}
-	else if (i == 0 && j >= 1 && j <= mapsize - 2)
-	{
-		if (boxes[i][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i][j - 1]->stat = Stat::pressed;
-			if (boxes[i][j - 1]->nobombs == 0)
-				clearing(i, j - 1);
-		}
-		if (boxes[i + 1][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j - 1]->stat = Stat::pressed;
-			if (boxes[i + 1][j - 1]->nobombs == 0)
-				clearing(i + 1, j - 1);
-		}
-		if (boxes[i + 1][j]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j]->stat = Stat::pressed;
-			if (boxes[i + 1][j]->nobombs == 0)
-				clearing(i + 1, j);
-		}
-		if (boxes[i + 1][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j + 1]->stat = Stat::pressed;
-			if (boxes[i + 1][j + 1]->nobombs == 0)
-				clearing(i + 1, j + 1);
-		}
-		if (boxes[i][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i][j + 1]->stat = Stat::pressed;
-			if (boxes[i][j + 1]->nobombs == 0)
-				clearing(i, j + 1);
-		}
-	}
-	else if (i == mapsize - 1 && j >= 1 && j <= mapsize - 2)
-	{
-		if (boxes[i][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i][j - 1]->stat = Stat::pressed;
-			if (boxes[i][j - 1]->nobombs == 0)
-				clearing(i, j - 1);
-		}
-		if (boxes[i - 1][j - 1]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j - 1]->stat = Stat::pressed;
-			if (boxes[i - 1][j - 1]->nobombs == 0)
-				clearing(i - 1, j - 1);
-		}
-		if (boxes[i - 1][j]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j]->stat = Stat::pressed;
-			if (boxes[i - 1][j]->nobombs == 0)
-				clearing(i - 1, j);
-		}
-		if (boxes[i - 1][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i - 1][j + 1]->stat = Stat::pressed;
-			if (boxes[i - 1][j + 1]->nobombs == 0)
-				clearing(i - 1, j + 1);
-		}
-		if (boxes[i][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i][j + 1]->stat = Stat::pressed;
-			if (boxes[i][j + 1]->nobombs == 0)
-				clearing(i, j + 1);
-		}
-	}
-	else if (i == 0 && j == 0)
-	{
-		if (boxes[i+1][j]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j]->stat = Stat::pressed;
-			if (boxes[i + 1][j]->nobombs == 0)
-				clearing(i + 1, j);
-		}
-		if (boxes[i + 1][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i + 1][j + 1]->stat = Stat::pressed;
-			if (boxes[i + 1][j + 1]->nobombs == 0)
-				clearing(i + 1, j + 1);
-		}
-		if (boxes[i][j + 1]->stat != Stat::pressed)
-		{
-			boxes[i][j + 1]->stat = Stat::pressed;
-			if (boxes[i][j + 1]->nobombs == 0)
-				clearing(i, j + 1);
-		}
-	}
-	else if (i == 0 && j == mapsize - 1)
-	{
-		if (boxes[0][mapsize - 2]->stat != Stat::pressed)
-		{
-			boxes[0][mapsize - 2]->stat = Stat::pressed;
-			if (boxes[0][mapsize - 2]->nobombs == 0)
-				clearing(0, mapsize - 2);
-		}
-		if (boxes[1][mapsize - 2]->stat != Stat::pressed)
-		{
-			boxes[1][mapsize - 2]->stat = Stat::pressed;
-			if (boxes[1][mapsize - 2]->nobombs == 0)
-				clearing(1, mapsize - 2);
-		}
-		if (boxes[1][mapsize - 1]->stat != Stat::pressed)
-		{
-			boxes[1][mapsize - 1]->stat = Stat::pressed;
-			if (boxes[1][mapsize - 1]->nobombs == 0)
-				clearing(1, mapsize - 1);
-		}
-	}
-	else if (i == mapsize - 1 && j == 0)
-	{
-		if (boxes[mapsize - 2][0]->stat != Stat::pressed)
-		{
-			boxes[mapsize - 2][0]->stat = Stat::pressed;
-			if (boxes[mapsize - 2][0]->nobombs == 0)
-				clearing(mapsize - 2, 0);
-		}
-		if (boxes[mapsize - 2][1]->stat != Stat::pressed)
-		{
-			boxes[mapsize - 2][1]->stat = Stat::pressed;
-			if (boxes[mapsize - 2][1]->nobombs == 0)
-				clearing(mapsize - 2, 1);
-		}
-		if (boxes[mapsize - 1][1]->stat != Stat::pressed)
-		{
-			boxes[mapsize - 1][1]->stat = Stat::pressed;
-			if (boxes[mapsize - 1][1]->nobombs == 0)
-				clearing(mapsize - 1, 1);
-		}
-	}
-	else if (i == mapsize - 1 && j == mapsize - 1)
-	{
-		if (boxes[mapsize - 2][mapsize - 1]->stat != Stat::pressed)
-		{
-			boxes[mapsize - 2][mapsize - 1]->stat = Stat::pressed;
-			if (boxes[mapsize - 2][mapsize - 1]->nobombs == 0)
-				clearing(mapsize - 2, mapsize - 1);
-		}
-		if (boxes[mapsize - 2][mapsize - 2]->stat != Stat::pressed)
-		{
-			boxes[mapsize - 2][mapsize - 2]->stat = Stat::pressed;
-			if (boxes[mapsize - 2][mapsize - 2]->nobombs == 0)
-				clearing(mapsize - 2, mapsize - 2);
-		}
-		if (boxes[mapsize - 1][mapsize - 2]->stat != Stat::pressed)
-		{
-			boxes[mapsize - 1][mapsize - 2]->stat = Stat::pressed;
-			if (boxes[mapsize - 1][mapsize - 2]->nobombs == 0)
-				clearing(mapsize - 1, mapsize - 2);
-		}
-	}
 }
 
 void Game::midclear(int i, int j)
 {
+	bool losed = false;
 	int a = boxes[i][j]->nobombs;
 	int b = 0;
 	std::vector<Box*> temp;
@@ -1014,13 +792,12 @@ void Game::midclear(int i, int j)
 		{
 			if (i->type == Type::bomb && i->stat != Stat::flagged)
 			{
-				lose = true;
-				return;
+				losed = true;
+				i->behind.setTexture(*TextureManager::AcquireTexture("res/redbomb.png"));
 			}
 			if (i->stat == Stat::flagged && i->type != Type::bomb)
 			{
-				lose = true;
-				return;
+				losed = true;
 			}
 		}
 		for (auto i : temp)
@@ -1031,7 +808,8 @@ void Game::midclear(int i, int j)
 				i->stat = Stat::pressed;
 		}
 	}
-	else
+
+	if (losed)
 		lose = true;
 }
 
