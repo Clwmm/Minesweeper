@@ -10,17 +10,18 @@ Box::Box(float _x, float _y, int _i, int _j)
 
 	box.setTexture(*TextureManager::AcquireTexture("res/box.png"));
 	flag.setTexture(*TextureManager::AcquireTexture("res/flag.png"));
-	
 }
 
-void Box::draw(sf::RenderWindow* window)
+void Box::draw(sf::RenderWindow* window, bool tr)
 {
 	box.setPosition(x, y);
 	flag.setPosition(x, y);
 	behind.setPosition(x, y);
 
+	
 	if (nobombs > 0 || type == Type::bomb)
 		window->draw(behind);
+
 	switch (stat)
 	{
 	case Stat::normal:

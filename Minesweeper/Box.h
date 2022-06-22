@@ -3,7 +3,7 @@
 #include "TextureManager.h"
 
 enum class Type { normal, bomb };
-enum class Stat { normal, pressed, flagged };
+enum class Stat { normal, pressed, flagged};
 
 class Box
 {
@@ -21,5 +21,5 @@ private:
 	float x, y;
 	int size = 11;
 public:
-	void draw(sf::RenderWindow* window);
+	void draw(sf::RenderWindow* window, bool tr);
 };

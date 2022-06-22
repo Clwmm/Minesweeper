@@ -552,7 +552,7 @@ void Game::game()
 				switch (evnt.key.code)
 				{
 				case sf::Keyboard::Up:
-					if (windowsetting < 10)
+					if (windowsetting < 25)
 						windowsetting++;
 					window->setSize(sf::Vector2u(windowsize.x + (windowsetting*25), windowsize.y + (windowsetting * 25)));
 					break;
@@ -710,7 +710,7 @@ void Game::game()
 		window->clear(sf::Color(191, 191, 191));
 		for (auto i : boxes)
 			for (auto j : i)
-				j->draw(window);
+				j->draw(window, hsbool);
 		if(!hsbool)
 			drawTextWithShadow(window, text, "Bombs: " + std::to_string(bombs) + "  Time: " + std::to_string(static_cast<int>(time)), 1);
 		else
@@ -799,6 +799,11 @@ void Game::midclear(int i, int j)
 			{
 				losed = true;
 			}
+			if (losed)
+			{
+				lose = true;
+				return;
+			}
 		}
 		for (auto i : temp)
 		{
@@ -808,9 +813,6 @@ void Game::midclear(int i, int j)
 				i->stat = Stat::pressed;
 		}
 	}
-
-	if (losed)
-		lose = true;
 }
 
 void Game::drawTextWithShadow(sf::RenderWindow* window, sf::Text& text, std::string string, int offset)
