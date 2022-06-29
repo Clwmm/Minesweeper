@@ -17,7 +17,7 @@ Minesweeper.exe     //press "6" in mainmenu
 | KEY | MainMenu | Game |
 | ------ | ------ | ------ |
 | ↑ | Select Option | Enlarge Window |
-| ↓ | Select Option | Shrinking Window |
+| ↓ | Select Option | Shrink Window |
 | ← | Change Option | --- |
 | → | Change Option | --- |
 | H | --- | Display HighScore | 

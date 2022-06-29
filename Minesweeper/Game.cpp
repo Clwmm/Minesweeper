@@ -499,14 +499,15 @@ void Game::game()
 				for (auto j : i)
 				{
 					if (j->stat == Stat::flagged && j->type != Type::bomb)
+					{
 						j->behind.setTexture(*TextureManager::AcquireTexture("res/wrongbomb.png"));
-				}
-			for (auto i : boxes)
-				for (auto j : i)
-				{
-					if (j->stat != Stat::pressed)
 						j->stat = Stat::pressed;
-				}
+						j->nobombs = 9;
+						bombs--;
+					}
+					if (j->type == Type::bomb && j->stat != Stat::flagged)
+						j->stat = Stat::pressed;
+				}		
 		}
 		if (win)
 		{
@@ -524,7 +525,6 @@ void Game::game()
 		leftMouse = false;
 		rightMouse = false;
 		middleMouse = false;
-		bombs = 0;
 		boxs = 0;
 		while (window->pollEvent(evnt))
 		{
@@ -614,85 +614,90 @@ void Game::game()
 		sf::Vector2i pixelPos = sf::Mouse::getPosition(*window);
 		countCursor = 0;
 
-		for (int i = 0; i < mapsize; i++)
-			for (int j = 0; j < mapsize; j++)
-			{
-				switch (boxes[i][j]->type)
+		if (!win && !lose)
+		{
+			bombs = 0;
+			for (auto j : boxes)
+				for (auto i : j)
 				{
-				case Type::bomb:
-					bombs++;
-					break;
-				case Type::normal:
-					boxs++;
-					if (boxes[i][j]->stat == Stat::pressed)
-						boxs--;
-					break;
-				}
-				if (boxes[i][j]->stat == Stat::flagged)
-					bombs--;
-
-				sf::FloatRect boundingBox = boxes[i][j]->box.getGlobalBounds();
-				sf::Vector2f point = window->mapPixelToCoords(pixelPos);
-				if (boundingBox.contains(point))
-				{
-					switch (boxes[i][j]->stat)
+					switch (i->type)
 					{
-					case Stat::normal:
-						countCursor++;
-						if (leftMouse)
-						{
-							if (firsttouch && size != 6)
-							{
-								// FIRST TOUCH AND REGENERATING MAP
-
-								if (boxes[i][j]->type == Type::bomb)
-								{
-									MapGenerator::mapregenerate(size, difficulty, boxes, i, j);
-									clearing(i, j);
-								}
-								else
-								{
-									if (boxes[i][j]->nobombs == 0)
-										clearing(i, j);
-									else
-									{
-										MapGenerator::mapregenerate(size, difficulty, boxes, i, j);
-										clearing(i, j);
-									}
-								}
-
-								firsttouch = false;
-							}
-							else
-							{
-								if (boxes[i][j]->type == Type::bomb)
-								{
-									boxes[i][j]->behind.setTexture(*TextureManager::AcquireTexture("res/redbomb.png"));
-									lose = true;
-								}
-								else
-								{
-									if (boxes[i][j]->nobombs == 0)
-										clearing(i, j);
-									else
-										boxes[i][j]->stat = Stat::pressed;
-								}
-							}
-						}
-						if (rightMouse)
-							boxes[i][j]->stat = Stat::flagged;
+					case Type::bomb:
+						bombs++;
 						break;
-					case Stat::flagged:
-						if (rightMouse)
-							boxes[i][j]->stat = Stat::normal;
-						break;
-					case Stat::pressed:
-						if (middleMouse)
-							midclear(i, j);
+					case Type::normal:
+						if (i->stat != Stat::pressed)
+							boxs++;
 						break;
 					}
+
+					if (i->stat == Stat::flagged)
+						bombs--;
+
+					sf::FloatRect boundingBox = i->box.getGlobalBounds();
+					sf::Vector2f point = window->mapPixelToCoords(pixelPos);
+					if (boundingBox.contains(point))
+					{
+						switch (i->stat)
+						{
+						case Stat::normal:
+							countCursor++;
+							if (leftMouse)
+							{
+								if (firsttouch && size != 6)
+								{
+									if (i->type == Type::bomb)
+									{
+										MapGenerator::mapregenerate(size, difficulty, boxes, i->i, i->j);
+										clearing(i->i, i->j);
+									}
+									else
+									{
+										if (i->nobombs == 0)
+											clearing(i->i, i->j);
+										else
+										{
+											MapGenerator::mapregenerate(size, difficulty, boxes, i->i, i->j);
+											clearing(i->i, i->j);
+										}
+									}
+
+									firsttouch = false;
+								}
+								else
+								{
+									if (i->type == Type::bomb)
+									{
+										i->behind.setTexture(*TextureManager::AcquireTexture("res/redbomb.png"));
+										lose = true;
+									}
+									else
+									{
+										if (i->nobombs == 0)
+											clearing(i->i, i->j);
+										else
+											i->stat = Stat::pressed;
+									}
+								}
+							}
+							if (rightMouse)
+								i->stat = Stat::flagged;
+							break;
+
+						case Stat::flagged:
+							if (rightMouse)
+								i->stat = Stat::normal;
+							break;
+
+						case Stat::pressed:
+							if (middleMouse || leftMouse)
+								midclear(i->i, i->j);
+							break;
+
+						}
+					}
 				}
-			}
+		}
 
 		if (boxs <= 0 && !lose)
 			win = true;
@@ -799,11 +804,11 @@ void Game::midclear(int i, int j)
 			{
 				losed = true;
 			}
-			if (losed)
-			{
-				lose = true;
-				return;
-			}
+		}
+		if (losed)
+		{
+			lose = true;
+			return;
 		}
 		for (auto i : temp)
 		{
