@@ -149,35 +149,38 @@ MapGenerator::MapGenerator(char size, char difficulty, std::vector<std::vector<B
 	for (auto i : boxes)
 		for (auto j : i)
 		{
-			std::vector<Box*> temp;
-
-			if (j->i - 1 >= 0 && j->j - 1 >= 0)
-				temp.push_back(boxes[j->i - 1][j->j - 1]);
-			if (j->i + 1 < mapsize && j->j + 1 < mapsize)
-				temp.push_back(boxes[j->i + 1][j->j + 1]);
-			if (j->i + 1 < mapsize && j->j - 1 >= 0)
-				temp.push_back(boxes[j->i + 1][j->j - 1]);
-			if (j->i - 1 >= 0 && j->j + 1 < mapsize)
-				temp.push_back(boxes[j->i - 1][j->j + 1]);
-			if (j->j + 1 < mapsize)
-				temp.push_back(boxes[j->i][j->j + 1]);
-			if (j->j - 1 >= 0)
-				temp.push_back(boxes[j->i][j->j - 1]);
-			if (j->i + 1 < mapsize)
-				temp.push_back(boxes[j->i + 1][j->j]);
-			if (j->i - 1 >= 0)
-				temp.push_back(boxes[j->i - 1][j->j]);
-
-			int a = 0;
-
-			for (auto k : temp)
+			if (j->type != Type::bomb)
 			{
-				if (k->type == Type::bomb)
-					a++;
+				std::vector<Box*> temp;
+
+				if (j->i - 1 >= 0 && j->j - 1 >= 0)
+					temp.push_back(boxes[j->i - 1][j->j - 1]);
+				if (j->i + 1 < mapsize && j->j + 1 < mapsize)
+					temp.push_back(boxes[j->i + 1][j->j + 1]);
+				if (j->i + 1 < mapsize && j->j - 1 >= 0)
+					temp.push_back(boxes[j->i + 1][j->j - 1]);
+				if (j->i - 1 >= 0 && j->j + 1 < mapsize)
+					temp.push_back(boxes[j->i - 1][j->j + 1]);
+				if (j->j + 1 < mapsize)
+					temp.push_back(boxes[j->i][j->j + 1]);
+				if (j->j - 1 >= 0)
+					temp.push_back(boxes[j->i][j->j - 1]);
+				if (j->i + 1 < mapsize)
+					temp.push_back(boxes[j->i + 1][j->j]);
+				if (j->i - 1 >= 0)
+					temp.push_back(boxes[j->i - 1][j->j]);
+
+				int a = 0;
+
+				for (auto k : temp)
+				{
+					if (k->type == Type::bomb)
+						a++;
+				}
+				if (a != 0)
+					j->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
+				j->nobombs = a;
 			}
-			if (a != 0)
-				j->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
-			j->nobombs = a;
 		}
 
 }
@@ -261,15 +264,10 @@ void MapGenerator::mapregenerate(char size, char difficulty, std::vector<std::ve
 		int a = rand() % mapsize;
 		int b = rand() % mapsize;
 
-		if (mapregenebool(a, b, i_b, j_b))
+		if (mapregenebool(a, b, i_b, j_b) && boxes[a][b]->type == Type::normal)
 		{
-			if (boxes[a][b]->type == Type::normal)
-			{
-				boxes[a][b]->type = Type::bomb;
-				boxes[a][b]->behind.setTexture(*TextureManager::AcquireTexture("res/bomb.png"));
-			}
-			else
-				i--;
+			boxes[a][b]->type = Type::bomb;
+			boxes[a][b]->behind.setTexture(*TextureManager::AcquireTexture("res/bomb.png"));
 		}
 		else
 			i--;
@@ -302,12 +300,12 @@ void MapGenerator::mapregenerate(char size, char difficulty, std::vector<std::ve
 				int a = 0;
 
 				for (auto k : temp)
-				{
 					if (k->type == Type::bomb)
 						a++;
-				}
+
 				if (a != 0)
 					j->behind.setTexture(*TextureManager::AcquireTexture("res/" + std::to_string(a) + ".png"));
+
 				j->nobombs = a;
 			}
 		}
