@@ -479,6 +479,8 @@ void Game::game()
 
 	bool firsttouch = true;
 
+	bool fl = true;
+
 	int bombs = 0;
 	int boxs = 0;
 	float time = 0;
@@ -495,19 +497,26 @@ void Game::game()
 	{
 		if (lose)
 		{
-			for (auto i : boxes)
-				for (auto j : i)
-				{
-					if (j->stat == Stat::flagged && j->type != Type::bomb)
+			if (fl)
+			{
+				bombs = 0;
+				for (auto i : boxes)
+					for (auto j : i)
 					{
-						j->behind.setTexture(*TextureManager::AcquireTexture("res/wrongbomb.png"));
-						j->stat = Stat::pressed;
-						j->nobombs = 9;
-						bombs--;
+						if (j->stat == Stat::flagged && j->type != Type::bomb)
+						{
+							j->behind.setTexture(*TextureManager::AcquireTexture("res/wrongbomb.png"));
+							j->stat = Stat::pressed;
+							j->nobombs = 9;
+						}
+						if (j->type == Type::bomb && j->stat != Stat::flagged)
+						{
+							j->stat = Stat::pressed;
+							bombs++;
+						}
 					}
-					if (j->type == Type::bomb && j->stat != Stat::flagged)
-						j->stat = Stat::pressed;
-				}		
+				fl = false;
+			}
 		}
 		if (win)
 		{
