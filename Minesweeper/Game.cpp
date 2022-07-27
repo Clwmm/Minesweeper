@@ -93,6 +93,8 @@ void Game::logoLoading()
 		}
 		if (fadecolor >= 255)
 			fadecolor = 255;
+		if (fadecolor <= 1)
+			fadecolor = 1;
 		logo.setColor(sf::Color(255, 255, 255, -fadecolor));
 
 		window->clear();
@@ -113,7 +115,7 @@ void Game::mainmenu()
 {
 	if (first)
 	{
-		window = new sf::RenderWindow(sf::VideoMode(500, 740), "Minesweeper", sf::Style::Close);
+		window = new sf::RenderWindow(sf::VideoMode(500, 740), "Minesweeper", sf::Style::Close || sf::Style::None);
 		window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 		window->setFramerateLimit(15);
 		window->display();
